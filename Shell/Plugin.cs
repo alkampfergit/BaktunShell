@@ -16,7 +16,10 @@ namespace Shell
 
         public void Dispose()
         {
-            if (Disposed != null) Disposed(this, EventArgs.Empty);
+            if (Disposed != null)
+            {
+                Disposed(this, EventArgs.Empty);
+            }
         }
 
         public event EventHandler Disposed;

@@ -72,6 +72,7 @@ namespace Shell
             {
                 var pluginHost = new PluginHostProxy { Is64Bit = (Bitness == 64) };
                 var plugin = pluginHost.LoadPlugin(AssemblyName, ClassName);
+                plugin.Disposed += plugin_Disposed;
                 Plugins.Add(plugin);
                 SelectedPlugin = plugin;
             }
@@ -79,6 +80,12 @@ namespace Shell
             {
                 MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        void plugin_Disposed(object sender, EventArgs e)
+        {
+            //plugin is disposed we need to remove from the list.
+            Dispatcher.Invoke(((Action) (() => Plugins.Remove((Plugin)sender))));
         }
 
         public void CloseTab(Plugin plugin)
@@ -122,5 +129,7 @@ namespace Shell
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
             }
         }
+
+        public System.Windows.Threading.Dispatcher Dispatcher { get; set; }
     }
 }

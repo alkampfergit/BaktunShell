@@ -14,6 +14,8 @@ namespace Shell
         {
             InitializeComponent();
             this.DataContext = _viewModel = new MainViewModel();
+            _viewModel.Dispatcher = this.Dispatcher;
+
             this.Closed += new EventHandler(MainWindow_Closed);
             Title = String.Format("Baktun Shell {0} bit", IntPtr.Size * 8);
         }
