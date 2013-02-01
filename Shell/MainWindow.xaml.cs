@@ -29,7 +29,7 @@ namespace Shell
         {
             var element = sender as FrameworkElement;
             if (element == null) return;
-            var plugin = element.DataContext as Plugin;
+            var plugin = element.DataContext as LocalPlugin;
             if (plugin == null) return;
             _viewModel.CloseTab(plugin);
         }

@@ -19,7 +19,9 @@ namespace Interfaces
 
         public string SendMessage(string message)
         {
-            throw new NotImplementedException();
+            if (!(NativeHandleContract is IActionableFrameworkElement)) return "Not supported";
+
+            return ((IActionableFrameworkElement)NativeHandleContract).SendMessage(message);
         }
     }
 }

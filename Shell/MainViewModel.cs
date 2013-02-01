@@ -16,7 +16,7 @@ namespace Shell
 
         public MainViewModel()
         {
-            Plugins = new ObservableCollection<Plugin>();
+            Plugins = new ObservableCollection<LocalPlugin>();
             LoadCommand = new DelegateCommand(Load);
 
             Assemblies = _assemblySearch.GetAssemblyNames();
@@ -27,14 +27,14 @@ namespace Shell
 
         public ICommand LoadCommand { get; private set; }
 
-        public ObservableCollection<Plugin> Plugins { get; private set; }
+        public ObservableCollection<LocalPlugin> Plugins { get; private set; }
 
-        public Plugin SelectedPlugin
+        public LocalPlugin SelectedPlugin
         {
             get { return _selectedPlugin; }
             set { _selectedPlugin = value; RaisePropertyChanged("SelectedPlugin"); }
         }
-        private Plugin _selectedPlugin;
+        private LocalPlugin _selectedPlugin;
 
         public IEnumerable<string> Assemblies { get; private set; }
 
@@ -85,10 +85,10 @@ namespace Shell
         void plugin_Disposed(object sender, EventArgs e)
         {
             //plugin is disposed we need to remove from the list.
-            Dispatcher.Invoke(((Action) (() => Plugins.Remove((Plugin)sender))));
+            Dispatcher.Invoke(((Action) (() => Plugins.Remove((LocalPlugin)sender))));
         }
 
-        public void CloseTab(Plugin plugin)
+        public void CloseTab(LocalPlugin plugin)
         {
             Plugins.Remove(plugin);
             plugin.Dispose();

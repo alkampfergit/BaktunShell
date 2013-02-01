@@ -20,7 +20,7 @@ namespace Shell
 
         public PluginHostProxy()
         {
-            Plugins = new List<Plugin>();
+            Plugins = new List<LocalPlugin>();
         }
 
         class IpcChannelRegistration
@@ -43,16 +43,16 @@ namespace Shell
 
         public bool Is64Bit { get; set; }
 
-        public List<Plugin> Plugins { get; set; }
+        public List<LocalPlugin> Plugins { get; set; }
 
-        public Plugin LoadPlugin(string assemblyName, string typeName)
+        public LocalPlugin LoadPlugin(string assemblyName, string typeName)
         {
             Start();
             OpenPluginLoader();
             var pluginRaw = _pluginLoader.LoadPlugin(assemblyName, typeName);
-            var remoteControl = FrameworkElementAdapters.ContractToViewAdapter(pluginRaw.NativeHandleContract);
-            
-            var plugin = new Plugin(remoteControl) { Title = GetTitle(typeName) };
+          
+
+            var plugin = new LocalPlugin(pluginRaw) { Title = GetTitle(typeName) };
             Plugins.Add(plugin);
             ++_refCount;
             plugin.Disposed += OnPluginDisposed;
@@ -119,7 +119,7 @@ namespace Shell
         private void OnPluginDisposed(object sender, EventArgs args)
         {
             --_refCount;
-            var plugin = sender as Plugin;
+            var plugin = sender as LocalPlugin;
             if (plugin != null) plugin.Disposed -= OnPluginDisposed;
 
             if (_refCount == 0)

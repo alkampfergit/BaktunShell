@@ -3,23 +3,28 @@ using System;
 using System.Windows.Input;
 using System.ComponentModel;
 using Shell.Util;
+using Interfaces;
+using System.AddIn.Pipeline;
 
 namespace Shell
 {
-    class Plugin : INotifyPropertyChanged, IDisposable
+    class LocalPlugin : INotifyPropertyChanged, IDisposable
     {
-        public Plugin(FrameworkElement view)
+        public LocalPlugin(IPlugin plugin)
         {
-            View = view;
+            Plugin = plugin;
+            View = FrameworkElementAdapters.ContractToViewAdapter(plugin.NativeHandleContract);
             SendMessage = new DelegateCommand(ExecuteSendMessage);
         }
 
         private void ExecuteSendMessage()
         {
-      
+            
         }
 
         public FrameworkElement View { get; private set; }
+
+        public IPlugin Plugin { get; set; }
 
         public string Title { get; set; }
 
