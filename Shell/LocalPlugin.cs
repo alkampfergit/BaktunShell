@@ -5,6 +5,7 @@ using System.ComponentModel;
 using Shell.Util;
 using Interfaces;
 using System.AddIn.Pipeline;
+using System.Diagnostics;
 
 namespace Shell
 {
@@ -19,7 +20,7 @@ namespace Shell
 
         private void ExecuteSendMessage()
         {
-            
+            Debug.WriteLine("Send message:" + MessageToSend + " returned: " + Plugin.SendMessage(MessageToSend));
         }
 
         public FrameworkElement View { get; private set; }

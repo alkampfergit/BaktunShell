@@ -18,10 +18,9 @@ namespace PluginHost
 
             try
             {
-                Func<string, string, INativeHandleContract> createOnUiThread = CreateOnUiThread;
-                var contract = (INativeHandleContract)Program.Dispatcher.Invoke(createOnUiThread, assembly, typeName);
-                var insulator = new NativeHandleContractInsulator(contract);
-                var plugin = new PluginBase(insulator);
+                Func<string, string, IPlugin> createOnUiThread = CreateOnUiThread;
+                var plugin = (IPlugin) Program.Dispatcher.Invoke(createOnUiThread, assembly, typeName);
+
                 return plugin;
             }
             catch (Exception ex)
@@ -33,7 +32,7 @@ namespace PluginHost
             }
         }
 
-        private static INativeHandleContract CreateOnUiThread(string assembly, string typeName)
+        private static IPlugin CreateOnUiThread(string assembly, string typeName)
         {
             var handle = Activator.CreateInstance(assembly, typeName);
             if (handle == null) throw new InvalidOperationException("Activator.CreateInstance() returned null");
@@ -51,7 +50,11 @@ namespace PluginHost
 
             var element = (FrameworkElement)obj;
             var contract = FrameworkElementAdapters.ViewToContractAdapter(element);
-            return contract;
+
+            var insulator = new NativeHandleContractInsulator(contract);
+            var plugin = new PluginBase(insulator, element);
+
+            return plugin;
         }
 
         public void Terminate()
