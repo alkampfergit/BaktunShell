@@ -5,7 +5,7 @@ namespace Interfaces
 {
     public interface IPluginLoader
     {
-        INativeHandleContract LoadPlugin(string assembly, string typeName);
+        IPlugin LoadPlugin(string assembly, string typeName);
 
         [OneWay]
         void Terminate();

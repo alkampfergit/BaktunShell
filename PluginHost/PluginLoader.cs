@@ -9,7 +9,7 @@ namespace PluginHost
 {
     class PluginLoader : MarshalByRefObject, IPluginLoader
     {
-        public INativeHandleContract LoadPlugin(string assembly, string typeName)
+        public IPlugin LoadPlugin(string assembly, string typeName)
         {
             if (String.IsNullOrEmpty(assembly)) throw new ArgumentNullException("assembly");
             if (String.IsNullOrEmpty(typeName)) throw new ArgumentNullException("typeName");
@@ -21,7 +21,8 @@ namespace PluginHost
                 Func<string, string, INativeHandleContract> createOnUiThread = CreateOnUiThread;
                 var contract = (INativeHandleContract)Program.Dispatcher.Invoke(createOnUiThread, assembly, typeName);
                 var insulator = new NativeHandleContractInsulator(contract);
-                return insulator;
+                var plugin = new PluginBase(insulator);
+                return plugin;
             }
             catch (Exception ex)
             {

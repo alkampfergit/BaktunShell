@@ -49,9 +49,9 @@ namespace Shell
         {
             Start();
             OpenPluginLoader();
-            var contract = _pluginLoader.LoadPlugin(assemblyName, typeName);
-            var remoteControl = FrameworkElementAdapters.ContractToViewAdapter(contract);
-
+            var pluginRaw = _pluginLoader.LoadPlugin(assemblyName, typeName);
+            var remoteControl = FrameworkElementAdapters.ContractToViewAdapter(pluginRaw.NativeHandleContract);
+            
             var plugin = new Plugin(remoteControl) { Title = GetTitle(typeName) };
             Plugins.Add(plugin);
             ++_refCount;
