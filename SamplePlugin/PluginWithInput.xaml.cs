@@ -39,5 +39,17 @@ namespace SamplePlugin
             MessageBox.Show("Aha!");
         }
 
+        private void StackOverflow_Click(object sender, RoutedEventArgs e)
+        {
+            Muori();
+        }
+
+        Int64 count;
+        public void Muori() 
+        {
+            count++;
+            Muori();
+        }
+
     }
 }

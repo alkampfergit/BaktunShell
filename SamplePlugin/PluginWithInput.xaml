@@ -22,6 +22,7 @@
         <TextBox Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="3" Name="PositionText"/>
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Orientation="Horizontal">
             <Button Margin="10" Name="MessageBoxButton">Message Box</Button>
+            <Button Margin="10" Name="StackOverflow" Click="StackOverflow_Click">StackOverflow</Button>
             <Button Margin="10" Name="BlockUiThreadButton">Block UI Thread</Button>
         </StackPanel> 
     </Grid>
