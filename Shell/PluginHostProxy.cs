@@ -7,6 +7,7 @@ using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading;
 using System.Windows;
 using Interfaces;
+using JobManagement;
 
 namespace Shell
 {
@@ -17,6 +18,8 @@ namespace Shell
         private int _refCount;
         private Process _process;
         private IPluginLoader _pluginLoader;
+
+        public Job JobObject { get; set; }
 
         public PluginHostProxy()
         {
@@ -50,7 +53,7 @@ namespace Shell
             Start();
             OpenPluginLoader();
             var pluginRaw = _pluginLoader.LoadPlugin(assemblyName, typeName);
-          
+
 
             var plugin = new LocalPlugin(pluginRaw) { Title = GetTitle(typeName) };
             Plugins.Add(plugin);
@@ -89,6 +92,10 @@ namespace Shell
             _process = Process.Start(info);
             _process.EnableRaisingEvents = true;
             _process.Exited += _process_Exited;
+            if (JobObject != null)
+            {
+                JobObject.AddProcess(_process.Handle);
+            }
         }
 
         void _process_Exited(object sender, EventArgs e)

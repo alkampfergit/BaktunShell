@@ -41,7 +41,7 @@
                                 <Button Command="{Binding SendMessage}" Content="Send Message" Margin="4,0,2,0"/>
                                 <TextBox Text="{Binding MessageToSend}" Margin="2,0,2,0" />
                             </DockPanel>
-                            <ContentPresenter Content="{Binding View}" />
+                        <ContentPresenter Content="{Binding View}" />
                         </DockPanel>
                         
                     </ScrollViewer>

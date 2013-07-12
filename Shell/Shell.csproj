@@ -59,6 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="JobObject.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="Services\AssemblySearch.cs" />
     <Page Include="MainWindow.xaml">

@@ -70,7 +70,7 @@ namespace Shell
         {
             try
             {
-                var pluginHost = new PluginHostProxy { Is64Bit = (Bitness == 64) };
+                var pluginHost = new PluginHostProxy { Is64Bit = (Bitness == 64), JobObject = new JobManagement.Job() };
                 var plugin = pluginHost.LoadPlugin(AssemblyName, ClassName);
                 plugin.Disposed += plugin_Disposed;
                 Plugins.Add(plugin);
