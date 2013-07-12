@@ -1,11 +1,13 @@
 ﻿using System;
 using System.AddIn.Pipeline;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading;
 using System.Windows;
 using Interfaces;
+using JobManagement;
 
 namespace Shell
 {
@@ -16,6 +18,11 @@ namespace Shell
         private int _refCount;
         private Process _process;
         private IPluginLoader _pluginLoader;
+
+        public PluginHostProxy()
+        {
+            Plugins = new List<Plugin>();
+        }
 
         class IpcChannelRegistration
         {
@@ -37,6 +44,10 @@ namespace Shell
 
         public bool Is64Bit { get; set; }
 
+        public Job JobObject { get; set; }
+
+        public List<Plugin> Plugins { get; set; }
+
         public Plugin LoadPlugin(string assemblyName, string typeName)
         {
             Start();
@@ -45,6 +56,7 @@ namespace Shell
             var remoteControl = FrameworkElementAdapters.ContractToViewAdapter(contract);
 
             var plugin = new Plugin(remoteControl) { Title = GetTitle(typeName) };
+            Plugins.Add(plugin);
             ++_refCount;
             plugin.Disposed += OnPluginDisposed;
 
@@ -78,6 +90,23 @@ namespace Shell
             };
 
             _process = Process.Start(info);
+            _process.EnableRaisingEvents = true;
+            _process.Exited += _process_Exited;
+            if (JobObject != null)
+            {
+                JobObject.AddProcess(_process.Handle);
+            }
+
+        }
+
+        void _process_Exited(object sender, EventArgs e)
+        {
+            foreach (var plugin in Plugins)
+            {
+                plugin.Dispose();
+            }
+            //Process process =(Process) sender;
+            //Debug.WriteLine("the process " + process.ProcessName + " exited");
         }
 
         private void OpenPluginLoader()

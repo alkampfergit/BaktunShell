@@ -39,5 +39,14 @@ namespace SamplePlugin
             MessageBox.Show("Aha!");
         }
 
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            int i = Crash(1);
+        }
+
+        private int Crash(int i)
+        {
+            return Crash(i);
+        }
     }
 }
