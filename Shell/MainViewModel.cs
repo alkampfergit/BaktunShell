@@ -110,7 +110,7 @@ namespace Shell
 
         public void OnWindowClosed()
         {
-            foreach (var plugin in Plugins)
+            foreach (var plugin in Plugins.ToList())
             {
                 try
                 {
