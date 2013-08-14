@@ -8,5 +8,7 @@ namespace Interfaces
     public interface IActionableFrameworkElement
     {
         String SendMessage(String message);
+
+        event PluginEventDelegate EventOccurred;
     }
 }

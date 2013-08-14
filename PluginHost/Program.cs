@@ -46,6 +46,7 @@ namespace PluginHost
 
                 RemotingConfiguration.RegisterWellKnownServiceType(
                     typeof(PluginLoader), "PluginLoader", WellKnownObjectMode.Singleton);
+               
 
                 SignalReady(name);
 

@@ -23,6 +23,12 @@ namespace SamplePlugin
         public WebBrowser()
         {
             InitializeComponent();
+            theBrowser.Navigated += theBrowser_Navigated;
+        }
+
+        void theBrowser_Navigated(object sender, NavigationEventArgs e)
+        {
+            OnEventOccurred("navigated", e.Uri.AbsoluteUri);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -39,6 +45,17 @@ namespace SamplePlugin
                 return "Started navigation to: " + command[1];
             }
             return "Unknown command for a Web Browser";
+        }
+
+        public event PluginEventDelegate EventOccurred;
+
+        protected void OnEventOccurred(String eventName, String eventPayload)
+        {
+            var temp = EventOccurred;
+            if (temp != null)
+            {
+                temp(new PluginEventData(eventName, eventPayload));
+            }
         }
     }
 }

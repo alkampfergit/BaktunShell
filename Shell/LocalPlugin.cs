@@ -10,14 +10,34 @@ using System.Runtime.Remoting;
 
 namespace Shell
 {
-    class LocalPlugin : INotifyPropertyChanged, IDisposable
+    /// <summary>
+    /// This class keep a reference to the remote plugin. 
+    /// </summary>
+    public class LocalPlugin : INotifyPropertyChanged, IDisposable
     {
+        
         public LocalPlugin(IPlugin plugin)
         {
             Plugin = plugin;
+            eventSink = new EventSink();
+            eventSink.OnHostToClient += eventSink_OnHostToClient;
+            plugin.RegisterSink(eventSink);
+            //Plugin.EventOccurred += Plugin_EventOccurred;
             View = FrameworkElementAdapters.ContractToViewAdapter(plugin.NativeHandleContract);
             SendMessage = new DelegateCommand(ExecuteSendMessage);
         }
+
+        void eventSink_OnHostToClient(PluginEventData data)
+        {
+            throw new NotImplementedException();
+        }
+
+        private EventSink eventSink;
+
+        //void Plugin_EventOccurred(object sender, PluginEventEventArgs e)
+        //{
+        //    Debug.WriteLine("Received event from host: " + e.EventName + " with payload " + e.EventPayload);
+        //}
 
         private void ExecuteSendMessage()
         {
@@ -40,9 +60,19 @@ namespace Shell
 
         public void Dispose()
         {
-            if (Disposed != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(Boolean disposing) 
+        {
+            if (disposing) 
             {
-                Disposed(this, EventArgs.Empty);
+                if (Disposed != null)
+                {
+
+                    Disposed(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -69,5 +99,8 @@ namespace Shell
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
             }
         }
+
     }
+
+    
 }

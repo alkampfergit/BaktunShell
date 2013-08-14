@@ -1,7 +1,9 @@
 ﻿using System;
 using System.AddIn.Contract;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Remoting;
 using System.Text;
 using System.Threading;
 
@@ -16,31 +18,23 @@ namespace Interfaces
 
         private DateTime lastPingTime;
 
+        private List<EventSink> sinks = new List<EventSink>();
+
         //private Timer aliveTimer;
 
         public PluginBase(INativeHandleContract nativeHandleContract, Object pluginInstance)
         {
             NativeHandleContract = nativeHandleContract;
             _pluginInstance = pluginInstance;
+            IActionableFrameworkElement afe = _pluginInstance as IActionableFrameworkElement;
+            if (afe != null) 
+            {
+                afe.EventOccurred += OnEvent;
+            }
             Interlocked.Increment(ref aliveHostCount);
             isAlive = true;
-            //aliveTimer = new Timer(timerCallback, null, 20000, 20000);
             lastPingTime = DateTime.Now;
         }
-
-        //private void timerCallback(object state)
-        //{
-        //    if (isAlive && DateTime.Now.Subtract(lastPingTime).TotalSeconds > 60) 
-        //    {
-        //        isAlive = false;
-        //        var actualCount = Interlocked.Decrement(ref aliveHostCount);
-        //        if (actualCount == 0) 
-        //        { 
-        //            //no more active plugin, kill everything
-        //            System.Diagnostics.Process.GetCurrentProcess().Kill();
-        //        }
-        //    }
-        //}
 
         public INativeHandleContract NativeHandleContract { get; private set; }
 
@@ -53,9 +47,31 @@ namespace Interfaces
             return ((IActionableFrameworkElement)_pluginInstance).SendMessage(message);
         }
 
-        //public void Ping()
-        //{
-        //    lastPingTime = DateTime.Now;
-        //}
+        public void RegisterSink(EventSink sink)
+        {
+            this.sinks.Add(sink);
+        }
+
+        public void OnEvent(PluginEventData data) 
+        {
+            foreach (var sink in sinks)
+            {
+                try
+                {
+                    sink.EventToClient(data);
+                }
+                catch (RemotingException rex)
+                {
+                    //Ignore it for now.
+                    Console.WriteLine(rex.ToString());
+                }
+            }
+        }
+
+    
     }
+
+
+
+ 
 }
