@@ -33,13 +33,13 @@ namespace Shell
 
             public static void RegisterChannel()
             {
-                lock (_lock)
-                {
-                    if (_registered) return;
-                    var channel = new IpcChannel();
-                    ChannelServices.RegisterChannel(channel, false);
-                    _registered = true;
-                }
+                //lock (_lock)
+                //{
+                //    if (_registered) return;
+                //    var channel = new IpcChannel();
+                //    ChannelServices.RegisterChannel(channel, false);
+                //    _registered = true;
+                //}
 
             }
         }

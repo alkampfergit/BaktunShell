@@ -29,7 +29,7 @@ namespace Shell
 
         void eventSink_OnHostToClient(PluginEventData data)
         {
-            throw new NotImplementedException();
+           
         }
 
         private EventSink eventSink;
