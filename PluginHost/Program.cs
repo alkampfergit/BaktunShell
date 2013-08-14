@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Runtime.Serialization.Formatters;
 using System.Threading;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace PluginHost
@@ -24,6 +27,9 @@ namespace PluginHost
 
             try
             {
+                Console.WriteLine("Host starting: ARGS: " + args[0]);
+                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+                AppDomain.CurrentDomain.DomainUnload += CurrentDomain_DomainUnload;
                 var name = args[0];
                 int bits = IntPtr.Size * 8;
                 Console.WriteLine("Starting PluginHost {0}, {1} bit", name, bits );
@@ -47,8 +53,29 @@ namespace PluginHost
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(ex);
+                ShowException(ex);
             }
+            Console.ReadKey();
+        }
+
+        static void CurrentDomain_DomainUnload(object sender, EventArgs e)
+        {
+           
+        }
+
+        private static void ShowException(Exception ex)
+        {
+            if (ex == null) return;
+            Console.WriteLine(ex.ToString());
+            Console.ReadKey();
+            var tmpFile = System.IO.Path.ChangeExtension(System.IO.Path.GetTempFileName(), ".txt");
+            System.IO.File.WriteAllText(tmpFile, ex.ToString());
+            Process.Start(tmpFile);
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            ShowException(e.ExceptionObject as Exception);
         }
 
         private static void SignalReady(string name)

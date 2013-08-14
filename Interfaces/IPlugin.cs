@@ -12,10 +12,10 @@ namespace Interfaces
 
         String SendMessage(String message);
 
-        /// <summary>
-        /// This function will be used to avoid keeping the host alive if the
-        /// main program chrashes for some reason.
-        /// </summary>
-        void Ping();
+        ///// <summary>
+        ///// This function will be used to avoid keeping the host alive if the
+        ///// main program chrashes for some reason.
+        ///// </summary>
+        //void Ping();
     }
 }

@@ -16,7 +16,7 @@ namespace Interfaces
 
         private DateTime lastPingTime;
 
-        private Timer aliveTimer;
+        //private Timer aliveTimer;
 
         public PluginBase(INativeHandleContract nativeHandleContract, Object pluginInstance)
         {
@@ -24,23 +24,23 @@ namespace Interfaces
             _pluginInstance = pluginInstance;
             Interlocked.Increment(ref aliveHostCount);
             isAlive = true;
-            aliveTimer = new Timer(timerCallback, null, 20000, 20000);
+            //aliveTimer = new Timer(timerCallback, null, 20000, 20000);
             lastPingTime = DateTime.Now;
         }
 
-        private void timerCallback(object state)
-        {
-            if (isAlive && DateTime.Now.Subtract(lastPingTime).TotalSeconds > 60) 
-            {
-                isAlive = false;
-                var actualCount = Interlocked.Decrement(ref aliveHostCount);
-                if (actualCount == 0) 
-                { 
-                    //no more active plugin, kill everything
-                    System.Diagnostics.Process.GetCurrentProcess().Kill();
-                }
-            }
-        }
+        //private void timerCallback(object state)
+        //{
+        //    if (isAlive && DateTime.Now.Subtract(lastPingTime).TotalSeconds > 60) 
+        //    {
+        //        isAlive = false;
+        //        var actualCount = Interlocked.Decrement(ref aliveHostCount);
+        //        if (actualCount == 0) 
+        //        { 
+        //            //no more active plugin, kill everything
+        //            System.Diagnostics.Process.GetCurrentProcess().Kill();
+        //        }
+        //    }
+        //}
 
         public INativeHandleContract NativeHandleContract { get; private set; }
 
@@ -53,9 +53,9 @@ namespace Interfaces
             return ((IActionableFrameworkElement)_pluginInstance).SendMessage(message);
         }
 
-        public void Ping()
-        {
-            lastPingTime = DateTime.Now;
-        }
+        //public void Ping()
+        //{
+        //    lastPingTime = DateTime.Now;
+        //}
     }
 }

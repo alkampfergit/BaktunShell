@@ -6,6 +6,7 @@ using Shell.Util;
 using Interfaces;
 using System.AddIn.Pipeline;
 using System.Diagnostics;
+using System.Runtime.Remoting;
 
 namespace Shell
 {
@@ -20,7 +21,15 @@ namespace Shell
 
         private void ExecuteSendMessage()
         {
-            Debug.WriteLine("Send message:" + MessageToSend + " returned: " + Plugin.SendMessage(MessageToSend));
+            try
+            {
+                Debug.WriteLine("Send message:" + MessageToSend + " returned: " + Plugin.SendMessage(MessageToSend));
+            }
+            catch (RemotingException)
+            {
+                //We are communicating with another process, everything can occour, I do not want to make main program chrash
+            }
+           
         }
 
         public FrameworkElement View { get; private set; }
