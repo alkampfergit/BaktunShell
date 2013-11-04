@@ -29,7 +29,7 @@ namespace Shell
 
         void eventSink_OnHostToClient(PluginEventData data)
         {
-           
+            RaiseMessageFromPluginEvent(data);
         }
 
         private EventSink eventSink;
@@ -51,6 +51,9 @@ namespace Shell
             }
            
         }
+
+     
+
 
         public FrameworkElement View { get; private set; }
 
@@ -100,7 +103,23 @@ namespace Shell
             }
         }
 
+        public event EventHandler<MessageFromPluginEventArgs> MessageFromPlugin;
+
+        private void RaiseMessageFromPluginEvent(PluginEventData eventData)
+        {
+            if (MessageFromPlugin != null)
+            {
+                MessageFromPlugin(this, new MessageFromPluginEventArgs(eventData));
+            }
+        }
     }
 
-    
+    public class MessageFromPluginEventArgs : EventArgs 
+    {
+        public MessageFromPluginEventArgs(PluginEventData pluginEventdata)
+        {
+            PluginEventData = pluginEventdata;
+        }
+        public PluginEventData PluginEventData { get; private set; }
+    }
 }

@@ -24,6 +24,11 @@
             </ComboBox>
             <Button Grid.Column="5" Margin="0,3,3,3" Command="{Binding LoadCommand}" HorizontalAlignment="Right" Width="32">Load</Button>
         </Grid>
+
+        <DataGrid DockPanel.Dock="Bottom" Height="80" ItemsSource="{Binding PluginReceivedData}">
+
+
+        </DataGrid>
         <TabControl Name="PluginTabs" ItemsSource="{Binding Plugins}" SelectedItem="{Binding SelectedPlugin}">
             <TabControl.ItemTemplate>
                 <DataTemplate>

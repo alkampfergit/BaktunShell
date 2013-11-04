@@ -7,6 +7,7 @@ using Shell.Util;
 using Shell.Services;
 using System.Linq;
 using System.Collections.Generic;
+using Interfaces;
 
 namespace Shell
 {
@@ -23,6 +24,9 @@ namespace Shell
             AssemblyName = Assemblies.FirstOrDefault();
 
             LoadClassNames();
+
+
+            PluginReceivedData = new ObservableCollection<PluginEventData>();
         }
 
         public ICommand LoadCommand { get; private set; }
@@ -38,14 +42,14 @@ namespace Shell
 
         public IEnumerable<string> Assemblies { get; private set; }
 
-        public string AssemblyName 
-        { 
+        public string AssemblyName
+        {
             get { return _assemblyName; }
             set { _assemblyName = value; LoadClassNames(); }
         }
         private string _assemblyName;
 
-        public IEnumerable<string> ClassNames 
+        public IEnumerable<string> ClassNames
         {
             get { return _classNames; }
             set { _classNames = value; RaisePropertyChanged("ClassNames"); }
@@ -61,7 +65,7 @@ namespace Shell
 
         public int Bitness
         {
-            get { return _bitness;  }
+            get { return _bitness; }
             set { _bitness = value; RaisePropertyChanged("Bitness"); }
         }
         private int _bitness = 32;
@@ -73,6 +77,7 @@ namespace Shell
                 var pluginHost = new PluginHostProxy { Is64Bit = (Bitness == 64), JobObject = new JobManagement.Job() };
                 var plugin = pluginHost.LoadPlugin(AssemblyName, ClassName);
                 plugin.Disposed += plugin_Disposed;
+                plugin.MessageFromPlugin += plugin_MessageFromPlugin;
                 Plugins.Add(plugin);
                 SelectedPlugin = plugin;
             }
@@ -82,10 +87,24 @@ namespace Shell
             }
         }
 
+        void plugin_MessageFromPlugin(object sender, MessageFromPluginEventArgs e)
+        {
+            Dispatcher.Invoke(((Action)(() =>
+            {
+                if (PluginReceivedData.Count > 20)
+                {
+                    PluginReceivedData.RemoveAt(0);
+                }
+                PluginReceivedData.Add(e.PluginEventData);
+            })));
+        }
+
+        public ObservableCollection<PluginEventData> PluginReceivedData { get; set; }
+
         void plugin_Disposed(object sender, EventArgs e)
         {
             //plugin is disposed we need to remove from the list.
-            Dispatcher.Invoke(((Action) (() => Plugins.Remove((LocalPlugin)sender))));
+            Dispatcher.Invoke(((Action)(() => Plugins.Remove((LocalPlugin)sender))));
         }
 
         public void CloseTab(LocalPlugin plugin)
