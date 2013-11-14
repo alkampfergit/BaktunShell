@@ -45,9 +45,14 @@ namespace Shell
             {
                 Debug.WriteLine("Send message:" + MessageToSend + " returned: " + Plugin.SendMessage(MessageToSend));
             }
-            catch (RemotingException)
+            catch (RemotingException ex)
             {
                 //We are communicating with another process, everything can occour, I do not want to make main program chrash
+                Debug.WriteLine("Send message RemotingException:" + ex.Message);
+            }
+            catch (Exception ex) 
+            {
+                Debug.WriteLine("Send message Exception: " + ex.Message);
             }
            
         }
